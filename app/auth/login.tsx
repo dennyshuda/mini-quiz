@@ -16,7 +16,7 @@ export async function clientAction({ request }: Route.ClientActionArgs) {
 		localStorage.setItem("accessToken", response.data.data.access_token);
 		localStorage.setItem("refreshToken", response.data.data.refresh_token);
 
-		return redirect("/list");
+		return redirect("/");
 	} catch (err: any) {
 		if (err.response?.data.error.code === "INVALID_CREDENTIALS") {
 			return {
