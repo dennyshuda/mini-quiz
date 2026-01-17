@@ -23,9 +23,9 @@ export function Navigation() {
 	};
 
 	const navLinks = [
-		{ name: "Dashboard", href: "/", icon: IconLayout },
 		{ name: "My Quizzes", href: "/", icon: IconBook },
-		{ name: "history", href: "/quiz/history", icon: IconUser },
+		{ name: "History", href: "/quiz/history", icon: IconUser },
+		{ name: "Profile", href: "/@me", icon: IconLayout },
 	];
 
 	return (
@@ -33,7 +33,7 @@ export function Navigation() {
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<div className="flex justify-between h-20">
 					<div className="flex items-center">
-						<Link to="/list" className="flex items-center gap-2">
+						<Link to="/" className="flex items-center gap-2">
 							<div className="size-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100 transition-transform">
 								<IconBook size={24} />
 							</div>
