@@ -4,8 +4,10 @@ export default [
 	layout("./quiz/_layout.tsx", [
 		index("./quiz/home.tsx"),
 		...prefix("quiz", [
+			route(":id", "./quiz/detail.tsx"),
 			route("history", "./quiz/history.tsx"),
-			route("attempt/:id", "./quiz/attempt.tsx"),
+			route("history/:id", "./quiz/result.tsx"),
+			route("attempt", "./quiz/attempt.tsx"),
 		]),
 	]),
 

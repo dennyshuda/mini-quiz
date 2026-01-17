@@ -1,58 +1,64 @@
-import { IconCalendar, IconChartBar, IconChevronLeft, IconRotate } from "@tabler/icons-react";
+import {
+	IconCalendar,
+	IconChartBar,
+	IconChevronLeft,
+	IconChevronRight,
+	IconRotate,
+	IconTrophy,
+} from "@tabler/icons-react";
+import api from "lib/axios";
+import type { Route } from "./+types/history";
+import { Link } from "react-router";
 
-const historyData = [
-	{ id: 1, title: "Javascript ES6", date: "12 Jan 2024", score: 85, status: "Passed" },
-	{ id: 2, title: "React Fundamentals", date: "10 Jan 2024", score: 40, status: "Failed" },
-	{ id: 3, title: "CSS Tailwind", date: "05 Jan 2024", score: 100, status: "Passed" },
-];
+export async function clientLoader() {
+	const response = await api.get("/quiz/history");
+	return response.data.data;
+}
 
-export default function QuizHistory() {
+export default function QuizHistoryPage({ loaderData }: Route.ComponentProps) {
+	console.log(loaderData);
+
 	return (
-		<div className="min-h-screen bg-[#F8FAFC] p-6 lg:p-12">
-			<div className="max-w-4xl mx-auto">
-				<button className="flex items-center gap-2 text-slate-500 font-bold mb-8 hover:text-slate-900 transition-colors">
-					<IconChevronLeft className="size-5" /> Kembali ke List
-				</button>
+		<div className="min-h-screen bg-[#F8FAFC] p-6 pb-20">
+			<div className="max-w-2xl mx-auto">
+				<h1 className="text-3xl font-black text-slate-900 mb-8">Riwayat Kuis</h1>
 
-				<div className="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-50">
-					<div className="p-8 border-b border-slate-50 flex justify-between items-center">
-						<h1 className="text-2xl font-black text-slate-900">Riwayat Quiz</h1>
-						<IconChartBar className="text-slate-300 size-8" />
-					</div>
-
-					<div className="divide-y divide-slate-50">
-						{historyData.map((item) => (
-							<div
+				<div className="space-y-4">
+					{loaderData.results.length > 0 ? (
+						loaderData.results.map((item: any) => (
+							<Link
 								key={item.id}
-								className="p-6 hover:bg-slate-50 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+								to={`/quiz/history/${item.session_id}`}
+								className="group block bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
 							>
-								<div className="flex gap-4 items-center">
-									<div
-										className={`size-14 rounded-2xl flex items-center justify-center font-black text-lg ${item.score >= 70 ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"}`}
-									>
-										{item.score}
-									</div>
-									<div>
-										<h4 className="font-bold text-slate-900 text-lg">{item.title}</h4>
-										<div className="flex items-center gap-2 text-slate-400 text-sm font-medium">
-											<IconCalendar className="size-4" /> {item.date}
+								<div className="flex items-center justify-between">
+									<div className="flex items-center gap-5">
+										<div className="size-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center">
+											<IconTrophy size={28} />
+										</div>
+										<div>
+											<h3 className="font-bold text-slate-800 text-lg group-hover:text-indigo-600 transition-colors">
+												{item.subtest_name}
+											</h3>
+											<div className="flex items-center gap-3 text-slate-400 text-sm mt-1 font-medium">
+												<span className="flex items-center gap-1">
+													<IconCalendar size={14} />
+													{new Date(item.completed_at).toLocaleDateString("id-ID")}
+												</span>
+												<span>•</span>
+												<span className="text-indigo-600 font-bold">Skor: {item.percentage}</span>
+											</div>
 										</div>
 									</div>
+									<IconChevronRight className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
 								</div>
-
-								<div className="flex items-center gap-4">
-									<span
-										className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest ${item.status === "Passed" ? "bg-cyan-100 text-cyan-600" : "bg-slate-100 text-slate-400"}`}
-									>
-										{item.status}
-									</span>
-									<button className="p-3 text-slate-400 hover:text-[#4F46E5] hover:bg-indigo-50 rounded-xl transition-all">
-										<IconRotate className="size-5" />
-									</button>
-								</div>
-							</div>
-						))}
-					</div>
+							</Link>
+						))
+					) : (
+						<div className="text-center py-20 bg-white rounded-xl border-2 border-dashed border-slate-200">
+							<p className="text-slate-400 font-medium">Belum ada riwayat kuis.</p>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

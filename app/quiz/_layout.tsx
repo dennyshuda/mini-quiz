@@ -10,9 +10,12 @@ interface Props {
 }
 
 export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-	const response = await api.get("/auth/profile");
-
-	return response.data;
+	try {
+		const response = await api.get("/auth/profile");
+		return response.data;
+	} catch (error) {
+		return error;
+	}
 }
 
 export default function QuizLayout({ loaderData }: Route.ComponentProps) {
