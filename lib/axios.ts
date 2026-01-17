@@ -21,7 +21,7 @@ api.interceptors.response.use(
 	(error) => {
 		const isLoginPath = error.config?.url?.includes("/auth/login");
 
-		if (error.response?.status === 40 && !isLoginPath) {
+		if (error.response?.status === 401 && !isLoginPath) {
 			localStorage.clear();
 			window.location.href = "/login";
 		}
