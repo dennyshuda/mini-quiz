@@ -1,4 +1,34 @@
-# Welcome to React Router!
+# 🚀 Mini Quiz Online Platform - React Router v7
+
+Aplikasi platform kuis berbasis web yang modern, responsif, dan elegan. Dibangun menggunakan **React Router v7** (Vite-based).
+
+---
+
+## 🛠️ Tech Stack
+
+- **Framework:** React Router v7
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Icons:** @tabler/icons-react
+- **HTTP Client:** Axios
+- **State Management:** React Router Loaders & Actions (Native Data Flow)
+
+---
+
+## 📁 Struktur Folder
+
+```text
+.
+├── app/
+│   ├── components/       # Komponen UI (Timer, Navbar, ProfileCard, dsb)
+│   ├── lib/              # Konfigurasi Axios & API Interceptor
+│   ├── routes/           # Halaman Utama & Logic (Loaders/Actions)
+│   ├── session.server.ts # Manajemen Session & Cookie (Auth)
+│   └── root.tsx          # Konfigurasi Global & Global Layout
+├── public/               # Asset statis (Logo, Favicon)
+├── .env.example          # Contoh variabel environment
+└── tailwind.config.ts    # Kustomisasi tema & desain sistem
+```
 
 A modern, production-ready template for building full-stack React applications using React Router.
 
@@ -16,6 +46,21 @@ A modern, production-ready template for building full-stack React applications u
 
 ## Getting Started
 
+### Clone project
+
+```bash
+# HTTPS
+git clone https://github.com/dennyshuda/mini-quiz.git
+
+or
+
+# SSH
+
+git clone git@github.com:dennyshuda/mini-quiz.git
+
+cd quiz-app
+```
+
 ### Installation
 
 Install the dependencies:
@@ -26,57 +71,13 @@ npm install
 
 ### Development
 
-Start the development server with HMR:
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
 Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
 
 ## Styling
 
