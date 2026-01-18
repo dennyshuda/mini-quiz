@@ -40,7 +40,7 @@ export default function LoginPage({ actionData }: Route.ComponentProps) {
 
 	return (
 		<div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
-			<div className="w-full max-w-md bg-white p-10 rounded-xl shadow-lg border border-slate-100">
+			<div className="w-full max-w-md bg-white p-10 rounded-3xl shadow-xl shadow-slate-200/60  border border-slate-100">
 				<div className="mb-10 text-center">
 					<h1 className="text-3xl font-black tracking-tight">Selamat Datang</h1>
 					<p className="text-slate-500 mt-2 font-medium">Masuk untuk melanjutkan quiz.</p>
