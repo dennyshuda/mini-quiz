@@ -10,6 +10,7 @@ import { Form, Link, redirect, useNavigation } from "react-router";
 import { getSession } from "~/session.server";
 import type { Route } from "./+types/detail";
 import { cn } from "utils/cn";
+import { rules } from "lib/constant";
 
 export async function loader({ params, request }: Route.LoaderArgs) {
 	const session = await getSession(request.headers.get("Cookie"));
@@ -47,9 +48,6 @@ export async function action({ params, request }: Route.ActionArgs) {
 		await axios.get(`/quiz/start/${params.id}`);
 		return redirect("/quiz/attempt");
 	} catch (err: any) {
-		if (err.response?.status === 409) {
-			return redirect("/quiz/attempt");
-		}
 		return { error: "Terjadi kesalahan saat memulai kuis." };
 	}
 }
@@ -62,13 +60,13 @@ export default function QuizDetailPage({ loaderData }: Route.ComponentProps) {
 	console.log(loaderData);
 
 	return (
-		<div className="min-h-screen bg-[#F8FAFC] p-6">
+		<div className="min-h-screen bg-slate-50 p-6">
 			<div className="max-w-2xl mx-auto">
 				<Link
 					to="/"
 					className="flex items-center gap-2 text-slate-500 mb-8 hover:text-indigo-600 transition-colors"
 				>
-					<IconArrowLeft size={20} /> Kembali ke Home
+					<IconArrowLeft size={20} /> Kembali ke Kuis
 				</Link>
 
 				<div className="bg-white rounded-[2.5rem] p-10 shadow-xl shadow-slate-200/50 border border-slate-100">
@@ -88,7 +86,7 @@ export default function QuizDetailPage({ loaderData }: Route.ComponentProps) {
 							<p className="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">
 								Waktu Pengerjaan
 							</p>
-							<p className="text-lg font-black text-slate-700">{subtest.duration || "15"} Menit</p>
+							<p className="text-lg font-black text-slate-700">10 Menit</p>
 						</div>
 					</div>
 
@@ -99,13 +97,7 @@ export default function QuizDetailPage({ loaderData }: Route.ComponentProps) {
 						</h3>
 
 						<ul className="space-y-3">
-							{[
-								"Kuis hanya dapat dikerjakan satu kali dalam satu sesi.",
-								"Timer akan terus berjalan meskipun Anda menutup tab atau browser.",
-								"Jawaban tersimpan secara otomatis setiap kali Anda memilih opsi.",
-								"Hasil akan langsung ditampilkan setelah Anda menekan tombol submit atau waktu habis.",
-								"Pastikan koneksi internet stabil selama pengerjaan kuis.",
-							].map((text, idx) => (
+							{rules.map((text, idx) => (
 								<li
 									key={idx}
 									className="flex gap-3 text-sm font-medium text-slate-600 leading-relaxed"
@@ -121,19 +113,27 @@ export default function QuizDetailPage({ loaderData }: Route.ComponentProps) {
 
 					{activeQuiz && (
 						<div
-							className={`p-6 rounded-3xl mb-8 border-2 ${isSameSubtest ? "bg-amber-50 border-amber-100" : "bg-red-50 border-red-100"}`}
+							className={cn(
+								"p-6 rounded-3xl mb-8 border-2",
+								isSameSubtest ? "bg-amber-50 border-amber-100" : "bg-red-50 border-red-100"
+							)}
 						>
 							<div className="flex gap-4">
 								<IconAlertTriangle
-									className={isSameSubtest ? "text-amber-600" : "text-red-600"}
+									className={cn(isSameSubtest ? "text-amber-600" : "text-red-600")}
 									size={28}
 								/>
 								<div>
-									<h3 className={`font-bold ${isSameSubtest ? "text-amber-900" : "text-red-900"}`}>
+									<h3
+										className={cn("font-bold", isSameSubtest ? "text-amber-900" : "text-red-900")}
+									>
 										{isSameSubtest ? "Lanjutkan Sesi Anda" : "Selesaikan Sesi Lain"}
 									</h3>
 									<p
-										className={`text-sm mt-1 font-medium ${isSameSubtest ? "text-amber-700" : "text-red-700"}`}
+										className={cn(
+											"text-sm mt-1 font-medium",
+											isSameSubtest ? "text-amber-700" : "text-red-700"
+										)}
 									>
 										{isSameSubtest
 											? "Anda masih memiliki kuis yang belum selesai di subtest ini. Timer tetap berjalan."
