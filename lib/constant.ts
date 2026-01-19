@@ -21,3 +21,11 @@ export const links = [
 	{ label: "Riwayat", href: "/quiz/history", icon: IconHistory },
 	{ label: "Profil", href: "/quiz/@me", icon: IconUser },
 ];
+
+export const rules = [
+	"Kuis hanya dapat dikerjakan satu kali dalam satu sesi.",
+	"Timer akan terus berjalan meskipun Anda menutup tab atau browser.",
+	"Jawaban tersimpan secara otomatis setiap kali Anda memilih opsi.",
+	"Hasil akan langsung ditampilkan setelah Anda menekan tombol submit atau waktu habis.",
+	"Pastikan koneksi internet stabil selama pengerjaan kuis.",
+];
