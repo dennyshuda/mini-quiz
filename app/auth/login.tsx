@@ -30,7 +30,7 @@ export async function action({ request }: Route.ActionArgs) {
 		session.set("access_token", response.data.data.access_token);
 		session.set("refresh_token", response.data.data.refresh_token);
 
-		return redirect("/secure", {
+		return redirect("/", {
 			headers: {
 				"Set-Cookie": await commitSession(session),
 			},
