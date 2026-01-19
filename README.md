@@ -1,4 +1,4 @@
-# 🚀 Mini Quiz Online Platform - React Router v7
+# 🚀 Mini Quiz Online Platform
 
 Aplikasi platform kuis berbasis web yang modern, responsif, dan elegan. Dibangun menggunakan **React Router v7** (Vite-based).
 
@@ -18,33 +18,15 @@ Aplikasi platform kuis berbasis web yang modern, responsif, dan elegan. Dibangun
 ## 📁 Struktur Folder
 
 ```text
-.
-├── app/
-│   ├── components/       # Komponen UI (Timer, Navbar, ProfileCard, dsb)
-│   ├── lib/              # Konfigurasi Axios & API Interceptor
-│   ├── routes/           # Halaman Utama & Logic (Loaders/Actions)
-│   ├── session.server.ts # Manajemen Session & Cookie (Auth)
-│   └── root.tsx          # Konfigurasi Global & Global Layout
-├── public/               # Asset statis (Logo, Favicon)
-├── .env.example          # Contoh variabel environment
-└── tailwind.config.ts    # Kustomisasi tema & desain sistem
+├── app/              # Entry point aplikasi, konfigurasi routing, dan layout utama
+├── components/       # UI Components
+├── interfaces/       # Kontrak data (TypeScript Interfaces/Types) untuk standarisasi objek
+├── lib/              # Konfigurasi library eksternal
+├── utils/            # Helper functions
+└── public/           # Aset statis
 ```
 
-A modern, production-ready template for building full-stack React applications using React Router.
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
+## 💻 Getting Started
 
 ### Clone project
 
@@ -63,26 +45,42 @@ cd quiz-app
 
 ### Installation
 
-Install the dependencies:
-
 ```bash
+
+# Install dependencies
 npm install
-```
 
-### Development
+# Setup env (pastikan telah mengisi variabel di .env)
+cp .env.example .env
 
-Start the development server:
-
-```bash
+# Jalankan server development
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+Aplikasi bakal berjalan di `http://localhost:5173`.
 
-## Styling
+## 🛠️ Keputusan Teknis Penting
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+### React Router v7
 
----
+- Alasan: Memilih React Router v7 karena merupakan evolusi dari Remix yang menggabungkan kemampuan Client-side dan Server-side secara built-in.
 
-Built with ❤️ using React Router.
+- Fitur Utama: Memanfaatkan fitur Loader untuk pre-fetching data dan Action sebagai State Management bawaan untuk menangani mutasi data (Form Submission) tanpa perlu library tambahan seperti Redux atau Zustand.
+
+### Tailwind CSS
+
+- Tailwind CSS: Memberikan kecepatan dalam development dan fleksibilitas kustomisasi penuh melalui sistem utilitas.
+
+- `clsx`: Digunakan untuk mengelola pengkondisian class (Conditional Classes) agar logika tampilan menjadi lebih readable (misal: perubahan warna timer saat kritis).
+
+- `tailwind-merge`: Digunakan untuk menghindari conflict antar class Tailwind saat melakukan penggabungan atau penimpaan class (override) pada komponen yang reusable.
+
+### TypeScript
+
+- Alasan: Menggunakan TypeScript untuk menghindari runtime error yang sulit dideteksi dan meningkatkan produktivitas melalui autocomplete.
+
+- Integrasi: Memanfaatkan fitur Type Safety bawaan React Router v7 pada Loader dan Action (menggunakan tipe Route.ActionArgs dan Route.LoaderArgs) sehingga aliran data dari server ke UI terjamin konsistensinya.
+
+### Axios
+
+- Alasan: Memilih Axios dibandingkan Fetch API karena dukungannya yang lebih baik terhadap interceptor (untuk penyisipan token otomatis), penanganan error, serta pembatalan request
