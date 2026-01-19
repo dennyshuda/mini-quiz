@@ -1,32 +1,10 @@
 import axios, { type AxiosInstance } from "axios";
 
-const api: AxiosInstance = axios.create({
-	baseURL: "/api",
-	headers: {
-		"Content-Type": "application/json",
-	},
-});
-
-api.interceptors.request.use((config) => {
-	const token = localStorage.getItem("accessToken");
-
-	if (token && config.headers) {
-		config.headers.Authorization = `Bearer ${token}`;
-	}
-	return config;
-});
-
-api.interceptors.response.use(
-	(response) => response,
-	(error) => {
-		const isLoginPath = error.config?.url?.includes("/auth/login");
-
-		if (error.response?.status === 401 && !isLoginPath) {
-			localStorage.clear();
-			window.location.href = "/login";
-		}
-		return Promise.reject(error);
-	}
-);
-
-export default api;
+export const axiosInstance = (token?: string) => {
+	return axios.create({
+		baseURL: import.meta.env.VITE_API_SERVER_URL,
+		headers: {
+			...(token && { Authorization: `Bearer ${token}` }),
+		},
+	});
+};
