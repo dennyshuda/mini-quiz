@@ -1,36 +1,42 @@
 import { IconAlertCircle, IconLoader, IconLock, IconMail } from "@tabler/icons-react";
 import { Input } from "components/input";
-import api from "lib/axios";
+import { axiosInstance } from "lib/axios";
 import { Form, Link, redirect, useNavigation } from "react-router";
 import { cn } from "utils/cn";
+import { commitSession, getSession } from "~/session.server";
 import type { Route } from "./+types/login";
+import { handleApiError } from "utils/error-handler";
 
-export async function clientAction({ request }: Route.ClientActionArgs) {
-	const formData = await request.formData();
-	const email = formData.get("email") as string;
-	const password = formData.get("password") as string;
+export async function loader({ request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+
+	if (session.has("access_token")) {
+		return redirect("/");
+	}
+}
+
+export async function action({ request }: Route.ActionArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+
+	const form = await request.formData();
+	const email = form.get("email") as string;
+	const password = form.get("password") as string;
+
+	const axios = axiosInstance();
 
 	try {
-		const response = await api.post("/auth/login", { email, password });
+		const response = await axios.post("/auth/login", { email, password });
 
-		localStorage.setItem("accessToken", response.data.data.access_token);
-		localStorage.setItem("refreshToken", response.data.data.refresh_token);
+		session.set("access_token", response.data.data.access_token);
+		session.set("refresh_token", response.data.data.refresh_token);
 
-		return redirect("/");
+		return redirect("/secure", {
+			headers: {
+				"Set-Cookie": await commitSession(session),
+			},
+		});
 	} catch (err: any) {
-		if (err.response?.data.error.code === "INVALID_CREDENTIALS") {
-			return {
-				success: false,
-				message: "Email atau password salah.",
-				code: "INVALID_CREDENTIALS",
-			};
-		}
-
-		return {
-			success: false,
-			message: "Terjadi kesalahan koneksi.",
-			code: "NOT FOUND",
-		};
+		return handleApiError(err);
 	}
 }
 
