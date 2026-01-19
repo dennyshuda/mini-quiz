@@ -1,35 +1,24 @@
 import { Navigation } from "components/navigation";
-import { UserProvider } from "context/UserContext";
-import type { IUser } from "interfaces/user";
-import api from "lib/axios";
 import { Outlet } from "react-router";
 import type { Route } from "./+types/_layout";
+import { authMiddleware } from "~/middleware/auth";
+import { userContext } from "~/context";
 
-interface Props {
-	data: Omit<IUser, "created_at" | "updated_at">;
-}
+export const middleware: Route.MiddlewareFunction[] = [authMiddleware];
 
-export async function clientLoader({ request }: Route.ClientLoaderArgs) {
-	try {
-		const response = await api.get("/auth/profile");
-		return response.data;
-	} catch (error) {
-		return error;
-	}
+export async function loader({ context }: Route.LoaderArgs) {
+	const user = context.get(userContext);
+	return { user };
 }
 
 export default function QuizLayout({ loaderData }: Route.ComponentProps) {
-	const { data: user }: Props = loaderData;
-
 	return (
-		<UserProvider initialUser={user}>
-			<div className="min-h-screen bg-slate-50">
-				<Navigation />
+		<div className="min-h-screen bg-slate-50">
+			<Navigation user={loaderData.user} />
 
-				<main className="max-w-7xl mx-auto py-8">
-					<Outlet />
-				</main>
-			</div>
-		</UserProvider>
+			<main className="max-w-7xl mx-auto py-8">
+				<Outlet />
+			</main>
+		</div>
 	);
 }

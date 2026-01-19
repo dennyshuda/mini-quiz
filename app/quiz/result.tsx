@@ -1,16 +1,14 @@
-import api from "lib/axios";
-import type { Route } from "./+types/result";
+import { IconClock, IconHourglassHigh, IconTarget, IconTrophy } from "@tabler/icons-react";
+import { axiosInstance } from "lib/axios";
 import { Link } from "react-router";
-import {
-	IconChevronLeft,
-	IconClock,
-	IconHourglassHigh,
-	IconTarget,
-	IconTrophy,
-} from "@tabler/icons-react";
+import { getSession } from "~/session.server";
+import type { Route } from "./+types/result";
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
-	const response = await api.get(`/quiz/result/${params.id}`);
+export async function loader({ params, request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+	const axios = axiosInstance(session.get("access_token"));
+
+	const response = await axios.get(`/quiz/result/${params.id}`);
 
 	return response.data.data;
 }

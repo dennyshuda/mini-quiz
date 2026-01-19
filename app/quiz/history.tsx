@@ -1,30 +1,25 @@
-import {
-	IconCalendar,
-	IconChartBar,
-	IconChevronLeft,
-	IconChevronRight,
-	IconRotate,
-	IconTrophy,
-} from "@tabler/icons-react";
-import api from "lib/axios";
-import type { Route } from "./+types/history";
+import { IconCalendar, IconChevronRight, IconTrophy } from "@tabler/icons-react";
+import { axiosInstance } from "lib/axios";
 import { Link } from "react-router";
+import { getSession } from "~/session.server";
+import type { Route } from "./+types/history";
 
-export async function clientLoader() {
-	const response = await api.get("/quiz/history");
+export async function loader({ request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+	const axios = axiosInstance(session.get("access_token"));
+
+	const response = await axios.get("/quiz/history");
 	return response.data.data;
 }
 
 export default function QuizHistoryPage({ loaderData }: Route.ComponentProps) {
-	console.log(loaderData);
-
 	return (
 		<div className="min-h-screen bg-[#F8FAFC] p-6 pb-20">
 			<div className="max-w-2xl mx-auto">
 				<h1 className="text-3xl font-black text-slate-900 mb-8">Riwayat Kuis</h1>
 
 				<div className="space-y-4">
-					{loaderData.results.length > 0 ? (
+					{loaderData.results?.length > 0 ? (
 						loaderData.results.map((item: any) => (
 							<Link
 								key={item.id}

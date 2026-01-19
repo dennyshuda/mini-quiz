@@ -7,3 +7,16 @@ export interface IQuiz {
 	is_active: boolean;
 	slug: string;
 }
+
+interface Question {
+	options: string[];
+	question_number: number;
+	questiton_text: string;
+}
+
+export interface ActiveQuizResponse {
+	session_id: string;
+	subtest_name: string;
+	expires_at: Date;
+	questions: Question[];
+}

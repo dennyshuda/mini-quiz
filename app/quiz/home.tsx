@@ -1,15 +1,19 @@
 import { IconTrophy } from "@tabler/icons-react";
 import { QuizItem } from "components/quiz-item";
 import type { IQuiz } from "interfaces/quiz";
-import api from "lib/axios";
 import type { Route } from "./+types/home";
+import { axiosInstance } from "lib/axios";
+import { getSession } from "~/session.server";
 
 interface Props {
 	data: IQuiz[];
 }
 
-export async function clientLoader() {
-	const res = await api.get("/subtests");
+export async function loader({ request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+	const axios = axiosInstance(session.get("access_token"));
+
+	const res = await axios.get("/subtests");
 	return res.data;
 }
 

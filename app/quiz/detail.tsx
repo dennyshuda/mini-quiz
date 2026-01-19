@@ -5,15 +5,20 @@ import {
 	IconPlayerPlay,
 	IconRefresh,
 } from "@tabler/icons-react";
-import api from "lib/axios";
+import { axiosInstance } from "lib/axios";
 import { Form, Link, redirect, useNavigation } from "react-router";
+import { getSession } from "~/session.server";
 import type { Route } from "./+types/detail";
+import { cn } from "utils/cn";
 
-export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+export async function loader({ params, request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+	const axios = axiosInstance(session.get("access_token"));
+
 	try {
 		const [listRes, activeRes] = await Promise.all([
-			await api.get("/subtests"),
-			await api.get("/quiz/active").catch(() => ({ data: { data: null } })),
+			await axios.get("/subtests"),
+			await axios.get("/quiz/active").catch(() => ({ data: { data: null } })),
 		]);
 
 		const subtest = listRes.data.data.find((s: any) => s.id === params.id);
@@ -35,9 +40,11 @@ export async function clientLoader({ params }: Route.ClientLoaderArgs) {
 	}
 }
 
-export async function clientAction({ params }: Route.ClientActionArgs) {
+export async function action({ params, request }: Route.ActionArgs) {
+	const session = await getSession(request.headers.get("Cookie"));
+	const axios = axiosInstance(session.get("access_token"));
 	try {
-		await api.get(`/quiz/start/${params.id}`);
+		await axios.get(`/quiz/start/${params.id}`);
 		return redirect("/quiz/attempt");
 	} catch (err: any) {
 		if (err.response?.status === 409) {
@@ -165,7 +172,10 @@ export default function QuizDetailPage({ loaderData }: Route.ComponentProps) {
 								<button
 									type="submit"
 									disabled={isSubmitting}
-									className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 shadow-lg shadow-indigo-100 transition-all active:scale-95"
+									className={cn(
+										"w-full cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 shadow-lg shadow-indigo-100 transition-all active:scale-95",
+										isSubmitting && "cursor-not-allowed"
+									)}
 								>
 									{isSubmitting ? (
 										"Menyiapkan..."
