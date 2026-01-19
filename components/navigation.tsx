@@ -1,25 +1,19 @@
 import { IconBook, IconLayout, IconLogout, IconMenu, IconUser, IconX } from "@tabler/icons-react";
-import { useUser } from "context/UserContext";
-import api from "lib/axios";
+import type { IUser } from "interfaces/user";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Form, Link, useNavigate, useSubmit } from "react-router";
 import { cn } from "utils/cn";
 
-export function Navigation() {
-	const { user } = useUser();
+export function Navigation({ user }: { user: Omit<IUser, "created_at" | "updated_at"> | null }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const navigate = useNavigate();
 
-	const handleLogout = async () => {
-		try {
-			const res = await api.post("/auth/logout");
-			console.log(res);
-		} catch (error) {
-			console.error("Logout error:", error);
-		} finally {
-			localStorage.clear();
-			navigate("/login");
-		}
+	const submit = useSubmit();
+
+	const handleLogout = () => {
+		// Ini akan mengirim POST request ke route /logout
+		// sehingga memicu action yang kita buat di atas
+		submit(null, { method: "post", action: "/logout" });
 	};
 
 	const navLinks = [
@@ -59,7 +53,7 @@ export function Navigation() {
 								<p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
 									Student
 								</p>
-								<p className="text-sm font-bold text-slate-900 leading-none">{user.name}</p>
+								<p className="text-sm font-bold text-slate-900 leading-none">{user?.name}</p>
 							</div>
 							<button
 								onClick={handleLogout}
@@ -100,10 +94,7 @@ export function Navigation() {
 						</Link>
 					))}
 					<div className="pt-4 mt-4 border-t border-slate-50">
-						<button
-							onClick={handleLogout}
-							className="w-full flex items-center gap-3 px-4 py-4 text-base font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all"
-						>
+						<button className="w-full flex items-center gap-3 px-4 py-4 text-base font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all">
 							<IconLogout size={20} />
 							Keluar
 						</button>

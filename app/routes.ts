@@ -8,11 +8,13 @@ export default [
 			route("history", "./quiz/history.tsx"),
 			route("history/:id", "./quiz/result.tsx"),
 			route("attempt", "./quiz/attempt.tsx"),
+			route("@me", "./auth/me.tsx"),
 		]),
 	]),
 
 	route("register", "./auth/register.tsx"),
 	route("login", "./auth/login.tsx"),
 	route("verify", "./auth/verify.tsx"),
-	route("@me", "./auth/me.tsx"),
+
+	route("/logout", "./routes/logout.ts"),
 ] satisfies RouteConfig;
