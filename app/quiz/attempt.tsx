@@ -1,10 +1,10 @@
 import { IconLoader2 } from "@tabler/icons-react";
 import { QuizTimer } from "components/timer";
-import { useCallback, useRef, useState } from "react";
-import { Form, redirect, useNavigation, useSubmit } from "react-router";
-import type { Route } from "./+types/attempt";
 import { axiosInstance } from "lib/axios";
+import { useCallback, useEffect, useState } from "react";
+import { Form, redirect, useNavigation, useSubmit } from "react-router";
 import { getSession } from "~/session.server";
+import type { Route } from "./+types/attempt";
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const session = await getSession(request.headers.get("Cookie"));
@@ -23,10 +23,12 @@ export async function action({ request }: Route.ActionArgs) {
 	const axios = axiosInstance(session.get("access_token"));
 
 	const formData = await request.formData();
-	const answers = JSON.parse(formData.get("answers") as string);
+
+	const rawAnswers = formData.get("answers") as string;
 
 	try {
-		const response = await axios.post(`/quiz/submit`, { answers });
+		const response = await axios.post(`/quiz/submit`, { answers: JSON.parse(rawAnswers) });
+
 		const id = response.data.data.session_id;
 		return redirect(`/quiz/history/${id}`);
 	} catch (err) {
@@ -36,34 +38,41 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function QuizPlay({ loaderData }: Route.ComponentProps) {
 	const [answers, setAnswers] = useState<Record<number, string>>({});
-	const formRef = useRef<HTMLFormElement>(null);
+	const [isTimeUp, setIsTimeUp] = useState(false);
 
-	const handleSelect = (qNumber: number, optionText: string) => {
+	const handleSelect = useCallback((qNumber: number, optionText: string) => {
 		setAnswers((prev) => ({
 			...prev,
 			[qNumber]: optionText,
 		}));
-	};
+	}, []);
 
 	const navigation = useNavigation();
 	const submit = useSubmit();
 	const isSubmitting = navigation.state === "submitting";
 
-	const handleAutoSubmit = useCallback(() => {
-		// const finalData: Record<number, string> = {};
+	const handleAutoSubmit = () => {
+		const form = new FormData();
+		const finalAnswers: Record<number, string> = {};
 
-		// loaderData.questions.forEach((q: any) => {
-		// 	finalData[q.question_number] = answers[q.question_number] || "";
-		// });
+		loaderData?.questions.forEach((q: any) => {
+			const questionNum = q.question_number;
+			finalAnswers[questionNum] = answers[questionNum] || "";
+		});
 
-		// return finalData;
-		if (formRef.current) {
-			submit(formRef.current);
+		form.append("answers", JSON.stringify(finalAnswers));
+
+		submit(form, { action: "/quiz/attempt", method: "POST" });
+	};
+
+	useEffect(() => {
+		if (isTimeUp) {
+			handleAutoSubmit();
 		}
-	}, [submit]);
+	}, [isTimeUp]);
 
 	return (
-		<div className="min-h-screen bg-[#F1F5F9]">
+		<div className="min-h-screen bg-slate-50">
 			<header className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200 p-4">
 				<div className="max-w-3xl mx-auto flex justify-between items-center">
 					<div>
@@ -73,7 +82,7 @@ export default function QuizPlay({ loaderData }: Route.ComponentProps) {
 						</p>
 					</div>
 
-					<QuizTimer expiresAt={loaderData.expires_at} onTimeUp={handleAutoSubmit} />
+					<QuizTimer expiresAt={loaderData.expires_at} onTimeUp={() => setIsTimeUp(true)} />
 				</div>
 			</header>
 
@@ -130,7 +139,7 @@ export default function QuizPlay({ loaderData }: Route.ComponentProps) {
 				))}
 
 				<div className="py-12 flex flex-col items-center">
-					<Form ref={formRef} method="POST" className="w-full">
+					<Form method="POST" className="w-full">
 						<input type="hidden" name="answers" value={JSON.stringify(answers)} />
 
 						<button

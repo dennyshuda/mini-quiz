@@ -14,7 +14,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function QuizHistoryPage({ loaderData }: Route.ComponentProps) {
 	return (
-		<div className="min-h-screen bg-[#F8FAFC] p-6 pb-20">
+		<div className="min-h-screen bg-slate-50 p-6 pb-20">
 			<div className="max-w-2xl mx-auto">
 				<h1 className="text-3xl font-black text-slate-900 mb-8">Riwayat Kuis</h1>
 

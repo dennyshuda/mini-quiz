@@ -14,8 +14,6 @@ export async function loader({ params, request }: Route.LoaderArgs) {
 }
 
 export default function HistoryDetailPage({ loaderData }: Route.ComponentProps) {
-	console.log(loaderData);
-
 	const { result } = loaderData;
 
 	const formatTime = (seconds: number) => {
@@ -25,7 +23,7 @@ export default function HistoryDetailPage({ loaderData }: Route.ComponentProps) 
 	};
 
 	return (
-		<div className="min-h-screen bg-[#F8FAFC] pb-20">
+		<div className="min-h-screen bg-slate-50 pb-20">
 			<div className="max-w-3xl mx-auto px-6 mt-10 ">
 				<div className="text-center bg-indigo-600 text-white rounded-[2.5rem] p-10 mb-10">
 					<p className="text-indigo-200 uppercase font-black tracking-[0.2em] text-xs mb-4">
@@ -55,7 +53,7 @@ export default function HistoryDetailPage({ loaderData }: Route.ComponentProps) 
 							<IconTarget size={32} />
 						</div>
 						<p className="text-4xl font-black text-slate-900">{result.percentage}%</p>
-						<p className="text-slate-400 text-xs font-bold uppercase mt-1">Akurasi</p>
+						<p className="text-slate-400 text-xs font-bold uppercase mt-1">Persentase</p>
 					</div>
 
 					<div className="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-white flex flex-col items-center justify-center">
@@ -104,7 +102,7 @@ export default function HistoryDetailPage({ loaderData }: Route.ComponentProps) 
 						Ke Beranda
 					</Link>
 					<Link
-						to="/subtests"
+						to="/"
 						className="flex-1 bg-indigo-600 text-white py-4 rounded-2xl font-bold text-center hover:bg-indigo-700 shadow-lg shadow-indigo-100 transition-colors"
 					>
 						Coba Subtest Lain

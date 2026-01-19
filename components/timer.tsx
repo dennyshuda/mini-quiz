@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { IconClock } from "@tabler/icons-react";
+import { cn } from "utils/cn";
 
 interface QuizTimerProps {
 	expiresAt: string;
@@ -11,40 +12,31 @@ export function QuizTimer({ expiresAt, onTimeUp }: QuizTimerProps) {
 	const [isUrgent, setIsUrgent] = useState(false);
 
 	useEffect(() => {
-		const targetTime = new Date(expiresAt).getTime();
-
-		const calculate = () => {
-			const now = new Date().getTime();
-			const diff = targetTime - now;
+		const interval = setInterval(() => {
+			const diff = new Date(expiresAt).getTime() - Date.now();
 
 			if (diff <= 0) {
+				clearInterval(interval);
 				setTimeLeft("00:00");
 				onTimeUp();
-				return false;
+			} else {
+				const m = Math.floor(diff / 60000);
+				const s = Math.floor((diff % 60000) / 1000);
+				setTimeLeft(`${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`);
 			}
-
-			const minutes = Math.floor(diff / (1000 * 60));
-			const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-			if (minutes < 1) setIsUrgent(true);
-
-			setTimeLeft(`${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`);
-			return true;
-		};
-
-		const interval = setInterval(calculate, 1000);
-		calculate();
+		}, 1000);
 
 		return () => clearInterval(interval);
-	}, [expiresAt, onTimeUp]);
+	}, [expiresAt]);
 
 	return (
 		<div
-			className={`flex items-center gap-2 px-4 py-2 rounded-2xl font-mono text-lg font-black transition-all duration-300 ${
+			className={cn(
+				"flex items-center gap-2 px-4 py-2 rounded-2xl font-mono text-lg font-black transition-all duration-300",
 				isUrgent
 					? "bg-red-500 text-white animate-pulse"
 					: "bg-slate-900 text-white shadow-lg shadow-slate-200"
-			}`}
+			)}
 		>
 			<IconClock size={20} />
 			{timeLeft}
