@@ -58,6 +58,7 @@ export function Navigation({ user }: { user: Omit<IUser, "created_at" | "updated
 									<Link
 										key={index}
 										to={href}
+										onClick={() => setIsOpen(false)}
 										className="flex items-center gap-3 p-3 text-sm font-medium text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"
 									>
 										<Icon size={18} className="text-slate-400" />
