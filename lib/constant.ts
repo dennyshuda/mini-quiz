@@ -1,3 +1,5 @@
+import { IconBook, IconHistory, IconUser } from "@tabler/icons-react";
+
 export const ERROR_CODES = {
 	INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
 	VALIDATION_ERROR: "VALIDATION_ERROR",
@@ -13,3 +15,9 @@ export const ERROR_MESSAGES: Record<string, string> = {
 	[ERROR_CODES.SERVER_ERROR]: "Terjadi masalah pada server kami. Coba lagi nanti.",
 	[ERROR_CODES.NETWORK_ERROR]: "Gagal terhubung ke server. Periksa koneksi internetmu.",
 };
+
+export const links = [
+	{ label: "Kuis", href: "/", icon: IconBook },
+	{ label: "Riwayat", href: "/quiz/history", icon: IconHistory },
+	{ label: "Profil", href: "/quiz/@me", icon: IconUser },
+];
